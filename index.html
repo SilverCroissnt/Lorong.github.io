@@ -1,59 +1,453 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Links</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lorong — Links Hub</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 40px 20px;
+      :root {
+        --bg: #000000;
+        --card: rgba(255, 255, 255, 0.233);
+        --card-hover: rgba(255, 255, 255, 0.09);
+        --border: rgba(255, 255, 255, 0.08);
+        --border-hover: rgba(255, 255, 255, 0.25);
+        --text: #f0eee8;
+        --muted: rgba(240, 238, 232, 0.45);
+        --accent1: #c8ff5e;
+        --accent2: #ff5e9e;
+        --accent3: #5ec8ff;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "DM Sans", sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 60px 20px 80px;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      /* ── Animated background ── */
+      .bg-orb {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.18;
+        pointer-events: none;
+        animation: drift 12s ease-in-out infinite alternate;
+      }
+      .bg-orb-1 {
+        width: 500px;
+        height: 500px;
+        background: var(--accent1);
+        top: -150px;
+        left: -180px;
+        animation-delay: 0s;
+      }
+      .bg-orb-2 {
+        width: 400px;
+        height: 400px;
+        background: var(--accent2);
+        bottom: -100px;
+        right: -120px;
+        animation-delay: -4s;
+      }
+      .bg-orb-3 {
+        width: 300px;
+        height: 300px;
+        background: var(--accent3);
+        top: 40%;
+        left: 60%;
+        animation-delay: -8s;
+      }
+
+      @keyframes drift {
+        from {
+          transform: translate(0, 0) scale(1);
         }
-        .profile-img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
+        to {
+          transform: translate(30px, 40px) scale(1.08);
         }
-        .link-container {
-            width: 100%;
-            max-width: 400px;
-            margin-top: 20px;
+      }
+
+      /* noise grain */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+        opacity: 0.035;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* ── Profile ── */
+      .profile {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 40px;
+        animation: fadeUp 0.7s ease both;
+      }
+
+      .avatar-ring {
+        width: 108px;
+        height: 108px;
+        border-radius: 50%;
+        padding: 3px;
+        background: conic-gradient(
+          var(--accent1),
+          var(--accent2),
+          var(--accent3),
+          var(--accent1)
+        );
+        animation: spin 6s linear infinite;
+        margin-bottom: 18px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
         }
-        .link-button {
-            display: block;
-            background-color: #ffffff;
-            color: #333;
-            text-decoration: none;
-            text-align: center;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            transition: transform 0.2s;
+      }
+
+      .avatar-inner {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .profile-img {
+        width: 96px;
+        height: 96px;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+      }
+
+      /* Fallback avatar letter */
+      .avatar-letter {
+        font-family: "Syne", sans-serif;
+        font-size: 2.4rem;
+        font-weight: 800;
+        color: var(--accent1);
+        line-height: 1;
+      }
+
+      .profile-name {
+        font-family:
+          "Syne",
+          Regular 400;
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1;
+        margin-bottom: 6px;
+      }
+
+      .profile-tag {
+        font-size: 0.82rem;
+        color: var(--muted);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      /* ── Links ── */
+      .links {
+        width: 100%;
+        max-width: 420px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .link-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px 20px;
+        text-decoration: none;
+        color: var(--text);
+        transition:
+          background 0.25s,
+          border-color 0.25s,
+          transform 0.2s;
+        animation: fadeUp 0.6s ease both;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .link-item::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          var(--accent-color, var(--accent1)) 0%,
+          transparent 60%
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+        border-radius: inherit;
+      }
+
+      .link-item:hover {
+        background: var(--card-hover);
+        border-color: var(--border-hover);
+        transform: translateY(-2px) scale(1.01);
+      }
+
+      .link-item:hover::before {
+        opacity: 0.07;
+      }
+
+      .link-item:nth-child(1) {
+        animation-delay: 0.15s;
+        --accent-color: #ff5e9e;
+      }
+      .link-item:nth-child(2) {
+        animation-delay: 0.25s;
+        --accent-color: #ff3c3c;
+      }
+      .link-item:nth-child(3) {
+        animation-delay: 0.35s;
+        --accent-color: #9146ff;
+      }
+      .link-item:nth-child(4) {
+        animation-delay: 0.45s;
+        --accent-color: #f0f0f0;
+      }
+
+      .link-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .link-icon svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .link-text {
+        flex: 1;
+      }
+      .link-title {
+        font-family: "Syne", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      .link-sub {
+        font-size: 0.75rem;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+
+      .link-arrow {
+        color: var(--muted);
+        transition:
+          transform 0.2s,
+          color 0.2s;
+        flex-shrink: 0;
+      }
+      .link-item:hover .link-arrow {
+        transform: translateX(3px);
+        color: var(--text);
+      }
+
+      /* icon backgrounds */
+      .icon-tipme {
+        background: rgba(255, 94, 158, 0.15);
+        color: #ff5e9e;
+      }
+      .icon-yt {
+        background: rgba(255, 60, 60, 0.15);
+        color: #ff3c3c;
+      }
+      .icon-twitch {
+        background: rgba(145, 70, 255, 0.15);
+        color: #9146ff;
+      }
+      .icon-tiktok {
+        background: rgba(240, 240, 240, 0.1);
+        color: #f0f0f0;
+      }
+
+      /* ── Footer ── */
+      footer {
+        margin-top: 48px;
+        font-size: 0.72rem;
+        color: rgba(240, 238, 232, 0.2);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        z-index: 1;
+        position: relative;
+      }
+
+      /* ── Animations ── */
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
         }
-        .link-button:hover {
-            transform: scale(1.02);
-            background-color: #000;
-            color: #fff;
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
 
-    <img src="your-photo.jpg" alt="Profile" class="profile-img">
-    <h3>Lorong</h3>
-
-    <div class="link-container">
-        <a href="https://facebook.com/..." class="link-button">Tipme (โดเนทขึ้นจอ)</a>
-        <a href="https://www.youtube.com/@Lorong-TH" class="link-button">Youtube</a>
-        <a href="https://www.twitch.tv/lorong_" class="link-button">Twitch</a>
-        <a href="https://www.tiktok.com/@lorong_4c" class="link-button">TikTok</a>
+    <div class="profile">
+      <div class="avatar-ring">
+        <div class="avatar-inner">
+          <!-- swap src to images/mascot.png once image is available -->
+          <img
+            src="images/mascot.png"
+            alt="Lorong"
+            class="profile-img"
+            onerror="
+              this.style.display = 'none';
+              this.nextElementSibling.style.display = 'flex';
+            "
+          />
+          <span class="avatar-letter" style="display: none">L</span>
+        </div>
+      </div>
+      <div class="profile-name">Lorong</div>
+      <div class="profile-tag">Streamer &amp; Content Creator</div>
     </div>
 
-</body>
+    <div class="links">
+      <!-- Tipme -->
+      <a
+        href="https://tipme.in.th/7eac03d1e375bcaddc17c99c"
+        class="link-item"
+        target="_blank"
+        rel="noopener"
+      >
+        <span class="link-icon icon-tipme">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"
+            />
+            <path d="M12 6v6l4 2" />
+          </svg>
+        </span>
+        <span class="link-text">
+          <span class="link-title">Tipme — โดเนทขึ้นจอ</span>
+          <span class="link-sub">ส่งข้อความขึ้นจอได้เลย!</span>
+        </span>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <!-- YouTube -->
+      <a
+        href="https://www.youtube.com/@Lorong-TH"
+        class="link-item"
+        target="_blank"
+        rel="noopener"
+      >
+        <span class="link-icon icon-yt">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1C4.5 20.5 12 20.5 12 20.5s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"
+            />
+          </svg>
+        </span>
+        <span class="link-text">
+          <span class="link-title">YouTube</span>
+          <span class="link-sub">@Lorong-TH — Live Stream</span>
+        </span>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <!-- Twitch -->
+      <a
+        href="https://www.twitch.tv/lorong_"
+        class="link-item"
+        target="_blank"
+        rel="noopener"
+      >
+        <span class="link-icon icon-twitch">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"
+            />
+          </svg>
+        </span>
+        <span class="link-text">
+          <span class="link-title">Twitch</span>
+          <span class="link-sub">lorong_ — Live Stream</span>
+        </span>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <!-- TikTok -->
+      <a
+        href="https://www.tiktok.com/@lorong_4c"
+        class="link-item"
+        target="_blank"
+        rel="noopener"
+      >
+        <span class="link-icon icon-tiktok">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"
+            />
+          </svg>
+        </span>
+        <span class="link-text">
+          <span class="link-title">TikTok</span>
+          <span class="link-sub">@lorong_4c</span>
+        </span>
+        <span class="link-arrow">→</span>
+      </a>
+    </div>
+
+    <footer>lorong © 2025</footer>
+  </body>
 </html>
